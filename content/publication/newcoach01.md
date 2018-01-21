@@ -4,7 +4,7 @@ date = "2017-10-01"
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
 # and Stacey, Fiona G. and Brown, Wendy J. and Holliday, Elizabeth G. and Jones, Mark and Yang, Fan and Hespe, Charlotte and Plotnikoff, Ronald C.
-authors = ["James, Erica L.", "Ewald, Ben D.", "Natalie A. Johnson",  "Jones, Mark"]
+authors = ["James, Erica L.", "Ewald, Ben D.", "Natalie A. Johnson",  "**Jones, Mark**"]
 
 # Publication type.
 # Legend:
@@ -61,4 +61,4 @@ caption = ""
 
 +++
 
-More detail can easily be written here using *Markdown* and $\rm \LaTeX$ math code.
+<!-- More detail can easily be written here using *Markdown* and $\rm \LaTeX$ math code. -->

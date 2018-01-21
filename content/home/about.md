@@ -53,9 +53,9 @@ weight = 5
 
 # Biography
 
-Mark Jones (t-student) is a biostatistician in the Clinical Research Design and Statistics Support Unit at the Hunter Medical Research Institute assisting researchers and commercial clients collect, process, analyse and interpret data from a wide range of studies. The projects that I am involved with range from randomized controlled trials to observational studies.
+Mark Jones (t-student) is a biostatistician in the Clinical Research Design and Statistics Support Unit at the Hunter Medical Research Institute assisting researchers and commercial clients collect, process, analyse and interpret data from a wide range of studies. Mark is involved in a range of projects from randomized controlled trials to observational studies.
 
-Mark's interests span statistical methods applied across the medicine, health, environmental and financial domains.
+Mark interests span statistical methods applied across the medicine, health, environmental and financial domains.
 
 
 
