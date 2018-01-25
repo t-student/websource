@@ -1,6 +1,6 @@
 +++
 title = "A single-arm longitudinal study to evaluate a decision aid for women who have been offered neoadjuvant systemic therapy for operable breast cancer (ANZ1301 DOMINO)"
-date = "2017"
+date = "2017-01-01"
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
 # and Stacey, Fiona G. and Brown, Wendy J. and Holliday, Elizabeth G. and Jones, Mark and Yang, Fan and Hespe, Charlotte and Plotnikoff, Ronald C.

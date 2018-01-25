@@ -88,16 +88,18 @@ plot(density(df.r$rt), main = "Distribution of reading times")
 
 {{< /highlight >}}
 
-In the above code you will note that the `so` variable contains an indicator of 'o' (object relative) and 's' (subject relative) that are coded as 1 and -1 respectively. When coding up Stan models you need to be a bit more careful with your data -- we will come back to this later. 
+In the above code you will note that the `so` variable contains an indicator of 'o' (object relative) and 's' (subject relative) that are coded as 1 and -1 respectively. When coding up Stan models you need to be a bit more careful with your data -- we might come back to this later. 
 
 
 
 <!-- A quick look at the reading times shows us what we expect to see, namely a heavily skewed distribution. 
 {{< figure src="/media/brms-tutorial-01.png" title="PDF of reading times" >}} -->
 
-The [brms](https://cran.r-project.org/web/packages/brms/index.html) package supports a wide range of (non-)linear multivariate multilevel models using Stan for full Bayesian inference. Many distributional assumptions are supported. Additionally, brms provides the capability of extracting the underlying Stan code and so are useful starting point if you want to do something more complicated. As a starting point we ignore the (very likely) possibility of correlated measures and fit a fixed effect model. We use weakly informative priors, but not the current `stan-dev` [reccommendations](https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations) nor a Cauchy[^1] distribution as per Gelman et al. 2008 [paper](https://arxiv.org/pdf/0901.4011.pdf). Here, we adopt Normal priors, simply because they are easy to think about and rationalise. For reference, the parameterisations of the brms supported distributions can be found [here](https://cran.r-project.org/web/packages/brms/vignettes/brms_families.html). 
+The [brms](https://cran.r-project.org/web/packages/brms/index.html) package supports a wide range of (non-)linear multivariate multilevel models using Stan for full Bayesian inference. Many distributional assumptions are supported. Additionally, brms provides the capability of extracting the underlying Stan code and thus gives a useful starting point if you want to do something more complicated. As a starting point we ignore the (very likely) possibility of correlated measures and fit a fixed effect model. We use weakly informative priors, but not the current `stan-dev` [reccommendations](https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations) nor a Cauchy[^1] distribution as per Gelman et al. 2008 [paper](https://arxiv.org/pdf/0901.4011.pdf). Here, we adopt Normal priors, simply because they are easy to think about and rationalise. For reference, the parameterisations of the brms supported distributions can be found [here](https://cran.r-project.org/web/packages/brms/vignettes/brms_families.html). 
 
-Prior to looking at the data, what do we know about average reading speed? Well, obviously, the lower bound is a little be greater than zero and a high value might be a couple of seconds. So, lets just say a typcial value is about 1000 millisecs and you could expect anywhere between about 100 and 2000 milliseconds and that gives us some guidance on what the intercept looks like. We are pulling numbers out of the air here, but it gets us a rough idea of what the typical value might be and we can (should) conduct sensitivity analyses with uninformative priors (that typically correspond with frequentist results).
+## An Initial Model
+
+Prior to looking at the data, what do we know about average reading speed? Well, obviously, the lower bound is a little be greater than zero and a high value might be a couple of seconds. So, lets just say a typcial value is about 1000 millisecs and you could expect anywhere between about 100 and 2000 milliseconds and that gives us some guidance on what the intercept looks like. We are pulling numbers out of the air here, but at least we have a rough idea of what the typical value might be and we can (should) conduct sensitivity analyses with uninformative priors (that typically correspond with frequentist results).
 
 $$ rt_i \sim Lognormal(\mu_i, \sigma) \\\\\\ \mu_i = \beta_0 + \beta_1 so_i \\\\\\  \beta_0 \sim Normal(6, 1) \\\\\\  \beta_1 \sim Normal(0, 10) \\\\\\  \sigma \sim Student-t(3, 0, 10) $$
 
@@ -155,7 +157,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).
 
 ```
 
-The marginal posterior distribution for each of the three parameters are shown below. The distribution for `b_s0` is predominantly below zero suggesting that the object-relative is easier to read. Unlike frequentist analyses, the results give us a view on the uncertainty in the error term (`sigma`) which ranges from 0.57 to 0.63 on the log scale.
+The marginal posterior distributions for each of the three parameters are shown below. The distribution of `b_s0` is mostly below zero suggesting that the object-relative is easier to read. However, the 95\% *credible interval* includes zero so the evidence is not particularly strong. Unlike frequentist analyses, the results give us a view on the uncertainty in the error term (`sigma`) which ranges from 0.57 to 0.63 on the log scale.
 
 {{< figure src="/media/brms01-posterior1.png" title="Posterior distribution for estimated parameters" >}}
 
@@ -167,7 +169,7 @@ Posterior means                    |  Posterior predictive
 ![](/media/brms01-posterior2.png)  |  ![](/media/brms01-posterior3.png)
 
 
-Another option for model checking is to use the [bayesplot](https://cran.r-project.org/web/packages/bayesplot/index.html) package, which provides a swag-full of posterior predictive checks that are more sophisticated than the single generated dataset shown above. Below we can see that simulated data has a much lower maximum value than that observed in the original data and the median of the simulated values is actually quite a lot higher than we observed.
+Another option for model checking is to use the [bayesplot](https://cran.r-project.org/web/packages/bayesplot/index.html) package, which provides a swag-full of posterior predictive checks that are more sophisticated than the single generated dataset shown above. Below we can see that simulated data has a much lower maximum value than that observed in the original data and the median of the simulated values is actually quite a lot higher than we observed. Both these diagnostics suggest the current model does not characterise the data well.
 
 
 PPC (max)                    |  PPC (median)  
@@ -175,7 +177,7 @@ PPC (max)                    |  PPC (median)
 ![](/media/brms01-ppc4.png)  |  ![](/media/brms01-ppc5.png)
 
 
-However, posterior predictive checks grouped by subject and object relative (see below) appear to show that the issues manifest to a greater extent in the subject relative group. An outline of the code for the last few plots is also shown below.
+Posterior predictive checks grouped by subject and object relative (see below) appear to show that the issues manifest to a greater extent in the subject relative group. An outline of the code for the last few plots is also shown below.
 
 
 PPC (max)                    |  PPC (median)  
@@ -231,6 +233,8 @@ ppc_stat_grouped(df.r$rt, yrep, stat = "median", group = df.r$so)
 {{< /highlight >}}
 
 
+## Relaxing the equal variance assumption
+
 While Sorensen do not explore this avenue, one possibility is that we may have reasonable distributional assumptions but the notion of a shared variance across groups may not be accurate. The brms package readily supports this refinement via its forumla interface that we used earlier. We do not nominate any priors for the `sigma` model parameters so they will just be assigned uninformative defaults.
 
 {{< highlight r>}}
@@ -251,7 +255,7 @@ blm1 <- brm(myf,
 summary(blm1, waic = TRUE)
 {{< /highlight >}}
 
-The results (below) suggest that the standard deviations for reading time are different across subject and object groups. However, posterior predictive checks on the maximum and median values (not shown) are still adrift from the observed values. We won't take this further yet, but we may return to it later.
+The results (below) suggest that the variation in reading times are different across subject and object groups. However, posterior predictive checks on the maximum and median values (not shown) are still not representative of the observed values. We won't take this further yet, but we might return to it later.
 
 ```
  Family: lognormal 
@@ -272,12 +276,206 @@ sigma_so           -0.11      0.03    -0.17    -0.05       1892 1.00
 ```
 
 
+## Modelling the Repeat Measures
+
+Given we know there are repeat measures in the data, we should model it as such or risk violating an assumption of independence. We do this by specifying person-level and item-level variability in the model. I won't say most, but a lot of people refer to these as *random intercepts*. Here is the revised model. You can see that the $\beta\_{person[i]}$ and $\beta\_{item[i]}$ make adjustments to the intercept term dependent on the particular person and the particular item, hence the random intercept terminology. 
+
+$$ rt_i \sim Lognormal(\mu_i, \sigma) \\\\\\ \mu_i = \beta_0 + \beta\_{person[i]} + \beta\_{item[i]} +  \beta_1 so_i \\\\\\  \beta_0 \sim Normal(6, 1) \\\\\\  \beta\_{person} \sim Normal(0, \sigma\_{person}) \\\\\\ \beta\_{item} \sim Normal(0, \sigma\_{item}) \\\\\\ \beta_1 \sim Normal(0, 10) \\\\\\  \sigma, \sigma\_{person} , \sigma\_{item} \sim Student-t(3, 0, 10)  $$
+
+It is a straight forward exercise to ask `brms` to fit this model. For the sake of simplicity, we will not continue to model the standard deviation across groups and I haven't specified all the priors but it would be simple to do so.
+
+{{< highlight r>}}
+# Random effects model
+df.r <- get.data()
+myf <- bf(rt ~ so + (1|subj) + (1|item))
+priors <- get_prior(myf,
+                    data = df.r,
+                    family = lognormal())
+priors$prior[1:2] <- "normal(0, 10)"
+
+# > priors
+#                   prior     class      coef group resp dpar nlpar bound
+# 1         normal(0, 10)         b                                      
+# 2         normal(0, 10)         b        so                            
+# 3 student_t(3, 5.9, 10) Intercept                                      
+# 4   student_t(3, 0, 10)        sd                                      
+# 5                              sd            item                      
+# 6                              sd Intercept  item                      
+# 7                              sd            subj                      
+# 8                              sd Intercept  subj                      
+# 9   student_t(3, 0, 10)     sigma                  
 
 
+blm2 <- brm(rt ~ so + (1|subj) + (1|item), 
+            data = df.r,
+            family = lognormal(),
+            prior = priors,
+            control = list(max_treedepth = 10),
+            iter = 2000,
+            chains = 2, cores = 6, seed = 5453, save_model = "brm1.stan")
+summary(blm2)
 
 
+post1 <- brms::posterior_predict(blm2)
+dim(post1)
+head(post1[,1])
+hist(post1[,1])
+bayesplot::ppc_dens_overlay(df.r$rt, post1[1:50, ])
+{{< /highlight >}}
 
 
+The results show us that the modelling the subject level and item level variance was worthwhile in that both the random intercept variance estimates are substantially above zero. Additionally, the estimates align closely with those of Sorensen. However, the estimate for the difference between the reading times continues to represent only weak evidence of an effect.
+
+```
+ Family: lognormal 
+  Links: mu = identity; sigma = identity 
+Formula: rt ~ so + (1 | subj) + (1 | item) 
+   Data: df.r (Number of observations: 547) 
+Samples: 2 chains, each with iter = 2000; warmup = 1000; thin = 1; 
+         total post-warmup samples = 2000
+    ICs: LOO = NA; WAIC = NA; R2 = NA
+ 
+Group-Level Effects: 
+~item (Number of levels: 15) 
+              Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
+sd(Intercept)     0.20      0.05     0.12     0.32        655 1.00
+
+~subj (Number of levels: 37) 
+              Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
+sd(Intercept)     0.26      0.04     0.19     0.35        867 1.00
+
+Population-Level Effects: 
+          Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
+Intercept     6.06      0.07     5.92     6.21        588 1.01
+so           -0.04      0.02    -0.08     0.01       2000 1.00
+
+Family Specific Parameters: 
+      Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
+sigma     0.52      0.02     0.49     0.55       2000 1.00
+```
+
+
+Next we introduce varying slopes into the model, which allows us to characterise the variation in the **difference** in reading time across individuals and items. As per Sorensen, we initially prohibit correlation between the varying interecpts and slopes. The required implementation is as follows.
+
+{{< highlight r>}}
+df.r <- get.data()
+# The latter (-1 + ) part prevents correlation between random effects
+(priors <- get_prior(bf(rt ~ so + 
+                         (1|subj) + (-1 + so |subj) + 
+                         (1|item) + (-1 + so|item)),   
+                    data = df.r,
+                    family = lognormal()))
+priors$prior[1:2] <- "normal(0, 10)"
+blm3 <- brm(rt ~ so + 
+              (1|subj) + (-1 + so |subj) + 
+              (1|item) + (-1 + so|item), 
+            data = df.r,
+            family = lognormal(),
+            prior = priors,
+            control = list(max_treedepth = 10),
+            iter = 2000,
+            chains = 2, cores = 6, seed = 5453, save_model = "brm1.stan")
+summary(blm3)
+VarCorr(blm3)
+
+{{< /highlight >}}
+
+
+While there is evidence for including the random slopes, the estimate of the difference between subject and object relatives has weakened. 
+
+```
+Family: lognormal 
+  Links: mu = identity; sigma = identity 
+Formula: rt ~ so + (1 | subj) + (-1 + so | subj) + (1 | item) + (-1 + so | item) 
+   Data: df.r (Number of observations: 547) 
+Samples: 2 chains, each with iter = 2000; warmup = 1000; thin = 1; 
+         total post-warmup samples = 2000
+    ICs: LOO = NA; WAIC = NA; R2 = NA
+ 
+Group-Level Effects: 
+~item (Number of levels: 15) 
+              Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
+sd(Intercept)     0.20      0.05     0.12     0.32        797 1.00
+sd(so)            0.04      0.03     0.00     0.11        782 1.00
+
+~subj (Number of levels: 37) 
+              Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
+sd(Intercept)     0.25      0.04     0.18     0.34        668 1.01
+sd(so)            0.06      0.03     0.00     0.13        619 1.00
+
+Population-Level Effects: 
+          Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
+Intercept     6.06      0.08     5.92     6.22        458 1.00
+so           -0.04      0.03    -0.09     0.02       2000 1.00
+
+Family Specific Parameters: 
+      Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
+sigma     0.52      0.02     0.49     0.55       2000 1.00
+```
+
+Finally, we remove the restriction on correlation between the varying slopes and intercepts as implemented below.
+
+{{< highlight r>}}
+df.r <- get.data()
+(priors <- get_prior(bf(rt ~ so + 
+                          (1 + so|subj) + 
+                          (1 + so|item)),
+                     data = df.r,
+                     family = lognormal()))
+priors$prior[1:2] <- "normal(0, 10)"
+# mypriors1 <- c(brms::set_prior("cauchy(0, 2.5)", class = "b"))
+blm4 <- brm(rt ~ so + 
+              (1 + so|subj) + 
+              (1 + so|item), 
+            data = df.r,
+            family = lognormal(),
+            prior = priors,
+            control = list(max_treedepth = 10),
+            iter = 2000,
+            chains = 2, cores = 6, seed = 5453, save_model = "brm1.stan")
+summary(blm4)
+{{< /highlight >}}
+
+
+The results suggest no correlation between the varying intercepts and slopes for the item but a negative correlation between the person level varying intercepts and slopes. The implication is that if a person has a slower than average reading time then they will read object relatives.
+
+
+```
+ Family: lognormal 
+  Links: mu = identity; sigma = identity 
+Formula: rt ~ so + (1 + so | subj) + (1 + so | item) 
+   Data: df.r (Number of observations: 547) 
+Samples: 2 chains, each with iter = 2000; warmup = 1000; thin = 1; 
+         total post-warmup samples = 2000
+    ICs: LOO = NA; WAIC = NA; R2 = NA
+ 
+Group-Level Effects: 
+~item (Number of levels: 15) 
+                  Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
+sd(Intercept)         0.21      0.05     0.13     0.33        660 1.00
+sd(so)                0.04      0.03     0.00     0.10        961 1.00
+cor(Intercept,so)    -0.00      0.53    -0.92     0.92       2000 1.00
+
+~subj (Number of levels: 37) 
+                  Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
+sd(Intercept)         0.25      0.04     0.19     0.34        624 1.00
+sd(so)                0.07      0.03     0.01     0.13        680 1.00
+cor(Intercept,so)    -0.61      0.30    -0.98     0.16       1392 1.00
+
+Population-Level Effects: 
+          Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
+Intercept     6.06      0.07     5.92     6.21        492 1.00
+so           -0.03      0.03    -0.09     0.02       1160 1.00
+
+Family Specific Parameters: 
+      Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
+sigma     0.51      0.02     0.48     0.55       2000 1.00
+```
+
+
+Unfortunately, that is all I have time for today. Hopefully, I will get an opportunity not to far in the future to check the interpretation and add some more details.
+
+<!-- 
 ## To do
 
 1. Prior predictive - how sane are our priors?
@@ -286,6 +484,10 @@ sigma_so           -0.11      0.03    -0.17    -0.05       1892 1.00
 3. varying intercepts varying slopes 45 mins
 4. correlation between the two 40 mins
 5. conclusions
+
+
+
+Of course, one may want to simplify the model for reasons of parsimony, or easier interpretability. Model selection can be carried out by evaluating predictive performance of the model, with methods such as Leave One Out (LOO) Cross-validation, or by using information criteria like the Watanabe Akaike (or Widely Available) Information Criterion (WAIC). See Nicenboim and Vasishth (2016) for discussion and example code.
 
 
 {{< gist t-student b93167cf529607038406>}}
@@ -303,6 +505,6 @@ sigma_so           -0.11      0.03    -0.17    -0.05       1892 1.00
 
 {{< youtube w7Ft2ymGmfc >}}
 
-
+-->
 
 [^1]: The [Cauchy](https://en.wikipedia.org/wiki/Cauchy_distribution) distribution is truly quite a bizarre, some would say pathological, distribution as neither the expeccted value nor variance are defined. It also ryhmes with grouchy - no wonder.
