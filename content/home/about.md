@@ -14,13 +14,16 @@ weight = 5
     "Time series",
     "Analysis of discrete/count data",
     "Longitudinal and correlated data analysis",
+    "Randomised Controlled Trials",
+    "Adaptive Trials",
     "Simulation",
     "Randomised controlled trials",
     "Linear programming",
     "Sampling",
     "Quantitative forest management",
     "R",
-    "Python"
+    "Python",
+    "Stan"
   ]
 
 # List your qualifications (such as academic degrees).
