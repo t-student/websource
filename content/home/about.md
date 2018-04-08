@@ -17,10 +17,9 @@ weight = 5
     "Randomised Controlled Trials",
     "Adaptive Trials",
     "Simulation",
-    "Randomised controlled trials",
     "Linear programming",
-    "Sampling",
-    "Quantitative forest management",
+    "Resampling",
+    "Quantitative ecology",
     "R",
     "Python",
     "Stan"
@@ -56,10 +55,15 @@ weight = 5
 
 # Biography
 
-Mark Jones (t-student) is a biostatistician in the Clinical Research Design and Statistics Support Unit at the Hunter Medical Research Institute assisting researchers and commercial clients collect, process, analyse and interpret data from a wide range of studies. Mark is involved in a range of projects from randomized controlled trials to observational studies.
+Mark Jones (t-student) is a biostatistician in the Clinical Research Design and Statistics Support Unit at the Hunter Medical Research Institute assisting researchers and commercial clients collect, process, analyse and interpret data from a wide range of studies. Mark is involved in a range of projects from randomized controlled trials to observational studies 
+to data visualisation.
 
-Mark interests span statistical methods applied across the medicine, health, environmental and financial domains.
+Mark interests span statistical methods applied across the medicine, health, environmental and financial domains - anything you can poke a stick at really. 
 
+Mark works predominantly in R and has been doing so for several years now, but will 
+pick up Stata and SAS on an intermittent basis as the need arises. 
+
+The main aim of this site is as a teaching aid primarily directed at myself. If the material is of use to someone else then top banana!
 
 
 
