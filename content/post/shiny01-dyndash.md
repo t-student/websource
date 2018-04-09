@@ -147,7 +147,7 @@ leaflet() %>%
 
 You can use the leaflet output within a Shiny app by calling `leafletOutput("map")` from the UI code and then using `renderLeaflet()` passing it the code that is shown above.
 
-
+27 mins
 
 https://www.rstudio.com/resources/webinars/dynamic-dashboards-with-shiny/
 
