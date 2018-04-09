@@ -237,7 +237,9 @@ or you can even just call `includeCSS("myfile.css")` which will copy a CSS into 
 
 A final note, you can incorporate the google analytics into your application pretty easily if you want to have it, see [here](https://shiny.rstudio.com/articles/).
 
+## What Now?
 
+Build an app!  
 
 
 
