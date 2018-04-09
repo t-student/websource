@@ -233,9 +233,15 @@ ui <- fluidPage(
 
 or you can even just call `includeCSS("myfile.css")` which will copy a CSS into every page. To learn more about CSS there is a free tutorial at [https://www.codecademy.com/tracks/web](https://www.codecademy.com/tracks/web) which covers both HTML and CSS in about 7 hours.
 
-## Google Analytics
+## Google Analytics and Things to Come..
 
 A final note, you can incorporate the google analytics into your application pretty easily if you want to have it, see [here](https://shiny.rstudio.com/articles/).
+
+Things in development:
+
+1. DT interactive tables that can accept user input.
+1. leaflet - interaction with maps
+1. working on interaction with graphics
 
 ## What Now?
 
