@@ -50,7 +50,7 @@ Shiny is a way to deploy your data analyses in an interactive format that is bac
 
 Shiny applications comprise a user interface in the form of a web page (generated from R code), a backend server (that can be hosted on your local machine).
 
-Let's build an app - use this template:
+Before we begin, your goto page for learning about this stuff is [https://shiny.rstudio.com/articles/](https://shiny.rstudio.com/articles/). Ok, let's build an app - use this template:
 
 ```
 library(shiny)

@@ -43,174 +43,205 @@ caption = "1950s"
 
 
 
-Shiny is a way to deploy your data analyses in an interactive format that is backed by R.
 
-## Shiny Next Steps
+OK, so we have gone over the basic setup and dug a bit more into the reactivity functionality. Now we are going to look at UI extensions aka html5 and css.
 
-In an earlier post we went over how to get a basic Shiny app together and deployed to [shinyapps.io](http://www.shinyapps.io/). Now we will look more at reactivity and customise appearance using tech like html5 and css from within RStudio. Specifically, we put a bit more focus onto the server side.
+## Working with the HTML
 
-## Customising Reactions
+The functions in the UI create HTML. So why don't we add some static content? Shiny comes with a series of `tags` functions that will create HTML for you. Here is an example:
 
-So earlier we saw that we can update various outputs based on a users input. However, we can also reactivity to trigger code on the server side or output after some chain of reactive updates or, we could postpone updates until a user explicity requests them through an update button.
-
-The first thing to understand about reactive elements is that they work together with reactive functions. For example, the `renderPlot` function is a reactive function that expects to receive reactive variables such as `input$num` discussed last time. The input reactive values notify the observer whenever there is a state change and the observer function responds.
-
-There are about 7 functions you need to know to work with reactivity a large proportion being the `render*()` functions, but there are a few others we discuss here.
-
-
-### `reactive`
-
-You can modularise code by using the function named `reactive`. With this you can, for example, share the same data across multiple reactive functions. However, in order to access the data stored within `reactive`  you need to invoke the data name as if you were calling a function. Below is an example to make it clear. We define a reactive data set and assign it to `x`. Whenever the input gets updated by the user the reactive method updates x. Now, within the `render` functions what we need to do is call `x` like we would call a function. 
-
-Note that `reactive` caches its value *until it becomes invalid* due to user input.
 
 ```
 library(shiny)
 
 ui <- fluidPage(
   
-  sliderInput(inputId = "num",
-              label = "Choose a number please",
-              value = 25, min = 1, max = 100),
-  textInput(inputId = "title",
-            "Provide title",
-            value = "Histogram of normal RV"),
-  plotOutput("hist"),
-  verbatimTextOutput("stats")
+  # a tag is an anchor
+  tags$h1("Title 1"),
+  tags$a(href = "www.rstudio.com", "RStudio"),
+  tags$p("This is my app para 1."),
+  tags$p("This is my app para ", tags$strong("2!!")),
+  tags$br(), # Page break
+  tags$p(style = "font-family:Impact", "This is my app para 3 with a custom style!!!"),
+  tags$hr(), # Horizontal rule
+  tags$code("This is my app"),
+  tags$br(), # Page break
+  # To use your own media create a www folder and chuck your
+  # media in there then reference as follows:
+  tags$img(height = 100, width = 250, src = "shinyzombie.jpg"),
+  tags$br(), # Page break
+  tags$br(), # Page break
   
-)
-server <- function(input, output){
+  HTML("<h2>Just for completeness we can write raw HTML if we want to!!!</h2>"),
   
-  # New reactive part !!!
-  x <- reactive({rnorm(input$num)})
-  
-  output$hist <- renderPlot({
-    mymain <- input$title
-    # Call x as you would a function !!!
-    hist(x(), main = mymain)
-  })
-  
-  output$stats <- renderPrint({
-    summary(x())
-  })
-}
-shinyApp(ui = ui, server = server)
-```
-
-### `isolate`
-
-The `isolate` function is the opposite of the `reactive` function. This function makes user specified input inert. For example we could make the graph title not update until we change the slider by wrapping the title in an `isolate` call as follows:
-
-```
-# Note that here we wrap the title and make it inert
-# until a user updates the slider.
-output$hist <- renderPlot({
-    mymain <- isolate(input$title)
-    hist(x(), main = mymain)
-  })
-```
-
-## Server-side Triggers
-
-Maybe we want to save a file to the system or do something that does not result in a UI update. In order to do this we implement a basic UI with a button for the user to click that we use to trigger the `observeEvent` function. This function can wrap a whole bunch of R code (using reactive elements if we want it to do so) but it is only run if the button is pressed, i.e. it is inert to all other updates. However, if the user clicks the button then code encapsulated in `observeEvent` will use all the latest reactive values. Here is an example that prints the number of clicks.
-
-```
-library(shiny)
-
-ui <- fluidPage(
   actionButton(inputId = "clicks",
                label = "Click me")
+  
 )
 server <- function(input, output){
   observeEvent(input$clicks, {
     print(as.numeric(input$clicks))
-  }) 
-}
-shinyApp(ui = ui, server = server)
-```
-
-For more information, see the action buttons article on the shiny site.
-
-There is a second server-side trigger called `observe` but in practice `observeEvent` is more useable.
-
-
-## Delay Reactions with `eventReactive`
-
-This enables us to do things like wait until a user has finished entering the title before we do an update. Here we add a button that will allow the user to control when the output updates.
-
-```
-library(shiny)
-
-ui <- fluidPage( 
-  sliderInput(inputId = "num",
-              label = "Choose a number please",
-              value = 25, min = 1, max = 100),
-  textInput(inputId = "title",
-            "Provide title",
-            value = "Histogram of normal RV"),
-  actionButton(inputId = "go",
-               label = "Update"),
-  plotOutput("hist")
-  
-)
-server <- function(input, output){  
-  x <- eventReactive(input$go, {rnorm(input$num)})
-  
-  output$hist <- renderPlot({
-    mymain <- isolate(input$title)
-    hist(x(), main = mymain)
-  })
-  
-  output$stats <- renderPrint({
-    summary(x())
   })
 }
 shinyApp(ui = ui, server = server)
 ```
 
-## Manage State with `reactiveValues`
 
-As a rule shiny does not permit you the way to update input values. However, sometimes this might be userful to do and so shiny provides a mechanism to construct your own reactive values. You might use this in a situation where you want to trigger a data update conditionally, like this:
+## Messing with the Layout
 
-![](/media/shiny102-usingreactiveVal.JPG) 
+We can place the UI elements wherever we want to. The main functions that we use to do this are `fluidRow()` and `column` which both insert `div`s. `fluidRow()` will divide you app into rows creating as many as you want. Next you can create (up to 12) columns within a row specifying both the width and offset of each column like this:
 
-In the above example the user is specifying whether they want to generate Normal or Uniform data. Here is an implementation:
+
+```
+  fluidRow(column(3),  # Takes up 3 units of width
+           column(5)), # Takes up 5 units of width
+  fluidRow(
+           column(4, offset = 8) # Offset the start of the column
+           )
+```
+
+
+Now, if you actually want to see something you pass it to the row or column function like this:
+
 
 ```
 library(shiny)
 
 ui <- fluidPage(
   
-  actionButton(inputId = "norm",label = "Normal"),
-  actionButton(inputId = "unif",label = "Uniform"),
-  plotOutput("hist")
-  
+  fluidRow(column(3, tags$p("Hi!!! :)")),  # Takes up 3 units of width
+           column(5, 
+                  sliderInput(inputId = "num",
+                              label = "Choose a number please",
+                              value = 25, min = 1, max = 100))), 
+  fluidRow(
+    column(6, offset = 1, 
+           plotOutput("hist")) 
+  )
 )
 server <- function(input, output){
-  
-  rv <- reactiveValues(x = rnorm(100))
-  
-  observeEvent(input$norm, {rv$x <- rnorm(100)})
-  observeEvent(input$unif, {rv$x <- runif(100)})
-  
   output$hist <- renderPlot({
-    hist(rv$x)
+    n <- input$num
+    hist(rnorm(n))
   })
+}
+
+shinyApp(ui = ui, server = server)
+```
+
+
+## Stacking Layouts 
+
+Panels are the basic UI aggregate element. To place a series of elements together into a panel we wrap them with the `wellPanel` function. In total there are 12 types of panels supported by shiny:
+
+
+Function                    |  Description
+:----------------------------|:-----------------------------------
+`absolutePanel()`            |Rigid
+`conditionalPanel()`            | Determines whether a panel is visible
+`fixedPanel()`            | Does not scroll
+`headerPanel()`            | Panel for title - use with `pageWithSidebar()`
+`inputPanel()`            | A grouping panel
+`mainPanel()`            | Displaying output - use with `pageWithSidebar()`
+`navlistPanel()`            | Stacking
+`sidebarPanel()`            | Sidebar of inputs - use with `pageWithSidebar()`
+`tabPanel()`            | Stackable
+`tabsetPanel()`            | Multiple stacked
+`titlePanel()`            | Apps title
+`wellPanel()`            | Panel with grey background
+
+If you want to stack things on top of each other start with `tabPanel()`. This is a small UI of its own and is a convenient way to break up the various elements of your app. These functions are designed to work in conjunction with `tabsetPanel()`, `navlistPanel` and `navbarPage()`. Here is a quick example.
+
+```
+library(shiny)
+
+ui <- fluidPage(
   
+  tabsetPanel(
+    tabPanel("tab 1", 
+             sliderInput(inputId = "num",
+                                  label = "Choose a number please",
+                                  value = 25, min = 1, max = 100)
+             ),
+    tabPanel("tab 1", 
+             plotOutput("hist")
+             )
+  )
+)
+server <- function(input, output){
+  output$hist <- renderPlot({
+    n <- input$num
+    hist(rnorm(n))
+  })
+}
+
+
+shinyApp(ui = ui, server = server)
+```
+
+![Shiny `tabPanel` Output](/media/shinytabpanel.png) 
+
+Now `navlistPanel()` is analogous to the `tabsetPanel()` except it creates your navigation in a sidebar. 
+
+
+## Precanned Layouts
+
+We should have talked about this first... Anyway, nevermind. These are convenience wrappers that let you put together a layout very quickly. The most common is `sidebarLayout()`:
+
+```
+library(shiny)
+
+ui <- fluidPage(
+  
+  sidebarLayout(
+    sidebarPanel(sliderInput(inputId = "num",
+                             label = "Choose a number please",
+                             value = 25, min = 1, max = 100)),
+    mainPanel(plotOutput("hist"))
+    
+  )
+)
+server <- function(input, output){
+  output$hist <- renderPlot({
+    n <- input$num
+    hist(rnorm(n))
+  })
 }
 shinyApp(ui = ui, server = server)
 ```
 
-`reactiveValues` are starting to move into a little more technical abstract ideas so, just to recap:
+Other options are `fixedPage` and `navbarPage()`. Note when you use `navbarPage()` you do so by replace the `fluidPage()` call. You can use the `navbarPage()` with `navbarMenu()` to give you drop down lists in the tabs. We can go further, but there is a tutorial on more advanced dashboards [here](https://www.rstudio.com/resources/webinars/dynamic-dashboards-with-shiny/).
 
-1. `reactiveValues` create a list of reactive values
-1. you can manipulate these values (usually with `observeEvent`) and an action button
+## CSS
 
-Final food for thought:
+Shiny enables us to stylise our site with our own branding. The way that we do this is to link with a CSS file, writing a global CSS header or write the CSS into a tags style attribute. We can then apply CSS to tags, or classes or ids. This forms a hierarchy that we can use to automatically deal with various aspects of the site overriding the bits that we want to have different. 
 
-> code outside the server function will be run once per R session whereas code inside the server function will be run once per end user. Take home - if you don't need to run the code more than once per user then put it outside the server function.
- 
-Thanks for reading!
+Shiny makes use of the Bootstrap 3 CSS framework, see [https://getbootstrap.com/](https://getbootstrap.com/). To use this we can create a `fluidPage()` function that contains `<div class="container-fluid"></div>`. Alternatively we could specify our own CSS file using the following:
+
+```
+ui <- fluidPage(
+  tags$head(
+    tags$link(
+        rel = "stylesheet",
+        type = "text/css"
+        href = "myfile.css"
+      )
+    )
+  
+)
+```
+
+or you can even just call `includeCSS("myfile.css")` which will copy a CSS into every page. To learn more about CSS there is a free tutorial at [https://www.codecademy.com/tracks/web](https://www.codecademy.com/tracks/web) which covers both HTML and CSS in about 7 hours.
+
+## Google Analytics
+
+A final note, you can incorporate the google analytics into your application pretty easily if you want to have it, see [here](https://shiny.rstudio.com/articles/).
+
+
+
+
+
+
 
 
 
