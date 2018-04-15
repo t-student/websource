@@ -1,9 +1,9 @@
 +++
-title = "The N'mare that is Multinomial Regression"
+title = "That is Multinomial Regression?"
 
-date = 2018-04-11
-lastmod = 2018-04-11
-draft = true
+date = 2018-04-15
+lastmod = 2018-04-15
+draft = false
 
 
 tags = ["multinomial", "R"]
@@ -41,9 +41,13 @@ image = "https://raw.githubusercontent.com/gcushen/hugo-academic/master/images/t
 caption = "1950s"
 +++
 
-Think about a sample of zombies that fall into mutually exclusive species[^1]. You know, maybe we have violently hairy zombnies, zombies that make particularly disturbing dinner guest noises and zombies that you just wouldn't want to hang out with. Let's label these zombie types as type I, II and III and lets call non-zombies type 0. Now, we have data on a biomarker (mesured on a continuous scale from 0 to 300) obtained from the sample and we think that the level of this biomarker can be used to identify type 0, I, II and III (non)-zombies. How do we address this question statistically?
+Think about a sample of zombies (I know, sorry) that fall into mutually exclusive species[^1]. You know, maybe we have violently hairy zombnies, zombies that seem to make particularly disturbing small talk at formal functions and zombies that you just wouldn't want to wake up next to. Let's label these zombie types as type I, II and III and lets call non-zombies type 0. Now, we have data on a biomarker (mesured on a continuous scale from 0 to 300) obtained from the sample and we think that the level of this biomarker can be used to identify type 0, I, II and III (non)-zombies. How do we address this question statistically?
 
-Well, we could subset our data and just run three logistic regression models comparing 0 versus type I, 0 versus type II and 0 versus type III. Below I construct some dummy zombie data by assuming a 
+Well, we could subset our data and just run three logistic regression models comparing 0 versus type I, 0 versus type II and 0 versus type III. 
+
+Detouring just slightly let's note first that within the context of a *polytomous response* we might be considering an *ordinal* response or we could be dealing with and unordered or *nomianal* response. Ordinal data implicitly contains more information than nominal data and by using this information we can usually construct simpler models.
+
+Below I construct some dummy zombie data by assuming a 
 
 
 
