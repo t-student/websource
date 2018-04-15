@@ -1,5 +1,5 @@
 +++
-title = "Shiny Stage 3 - UI customisation"
+title = "Shiny Stage 4 - Dynamic Dashboards"
 
 date = 2018-04-10
 lastmod = 2018-04-10

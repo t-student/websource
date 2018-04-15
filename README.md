@@ -17,3 +17,5 @@ In a nutshell:
 - cd back out of public and blow it away if you want...
 
 Clear?
+
+And, to run the hugo server on your local machine, cd to the websource directory and type `hugo server -D`.
