@@ -41,9 +41,75 @@ image = "https://raw.githubusercontent.com/gcushen/hugo-academic/master/images/t
 caption = "1950s"
 +++
 
-Think about a sample of zombies (I know, sorry) that fall into mutually exclusive species[^1]. You know, maybe we have violently hairy zombnies, zombies that seem to make particularly disturbing small talk at formal functions and zombies that you just wouldn't want to wake up next to. Let's label these zombie types as type I, II and III and lets call non-zombies type 0. Now, we have data on a biomarker (mesured on a continuous scale from 0 to 300) obtained from the sample and we think that the level of this biomarker can be used to identify type 0, I, II and III (non)-zombies. How do we address this question statistically?
+Ref: https://www3.nd.edu/~rwilliam/stats3/Mlogit1.pdf
+
+Think about a sample of zombies (I know, sorry) that fall into mutually exclusive species[^1]. You know, maybe we have violently hairy zombnies, zombies that seem to make disturbing small talk at formal functions and zombies that you just wouldn't want to wake up next to. Let's label these zombie types as type I, II and III and lets call non-zombies type 0. Now, we have data on a biomarker (mesured on a continuous scale from 0 to 300) obtained from the sample and we think that the level of this biomarker can be used to identify type 0, I, II and III (non)-zombies. How do we address this question statistically?
 
 Well, we could subset our data and just run three logistic regression models comparing 0 versus type I, 0 versus type II and 0 versus type III. 
+But we don't do this. Instead we use a multinomial logistic model. Our dependent variable is zombie type and we use non-zombie as the reference level. We compute the probability of membership in the other categories compared to the probability of membership in the reference category. To do this we need to fit $M - 1$ models where $M$ is the number of levels in the dependent variable (4 here). We model the log odds, like this:
+
+$$
+log \frac{Pr(Y_i = m)}{Pr(Y_i = referant)} = beta_0 + beta_1 bioscore_{i} = Z_{mi}
+$$
+
+To compute the probabilities you need to do:
+
+$$
+Pr(Y_i = m) = \frac{exp(Z_{mi})}{1 + \sum_2^M exp(Z_{hi}) }
+$$
+
+and for the reference category you just replace the numerator with a 1.
+
+After fitting the multinomial model you get a table showing the parameter estimates from each model. We are predicting the logit - this is the odds of membership in a given category of the outcome variable. The coefficients below give the change in the logit for each one unit change in the predictor.
+
+
+
+```
+--------------------------------------------------------------------------------
+pathology0no~4 |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+---------------+----------------------------------------------------------------
+Benign         |  (base outcome)
+---------------+----------------------------------------------------------------
+Squamous       |
+    Hscore_ngf |   .0991562   .0110688     8.96   0.000     .0774617    .1208507
+         _cons |  -7.980021   .8811443    -9.06   0.000    -9.707032   -6.253009
+---------------+----------------------------------------------------------------
+Adenocarcinoma |
+    Hscore_ngf |   .0682796   .0102071     6.69   0.000      .048274    .0882852
+         _cons |  -5.596755   .7660139    -7.31   0.000    -7.098115   -4.095395
+---------------+----------------------------------------------------------------
+Small_Cell     |
+    Hscore_ngf |   .0018791    .021452     0.09   0.930    -.0401661    .0439243
+         _cons |  -2.827464   1.324856    -2.13   0.033    -5.424135    -.230793
+--------------------------------------------------------------------------------
+
+```
+
+```
+--------------------------------------------------------------------------------
+pathology0no~4 |        RRR   Std. Err.      z    P>|z|     [95% Conf. Interval]
+---------------+----------------------------------------------------------------
+Benign         |  (base outcome)
+---------------+----------------------------------------------------------------
+Squamous       |
+    Hscore_ngf |   1.104239   .0122226     8.96   0.000     1.080541    1.128456
+         _cons |   .0003422   .0003016    -9.06   0.000     .0000609    .0019247
+---------------+----------------------------------------------------------------
+Adenocarcinoma |
+    Hscore_ngf |   1.070665   .0109284     6.69   0.000     1.049458      1.0923
+         _cons |   .0037099   .0028418    -7.31   0.000     .0008267    .0166492
+---------------+----------------------------------------------------------------
+Small_Cell     |
+    Hscore_ngf |   1.001881   .0214924     0.09   0.930     .9606299    1.044903
+         _cons |   .0591627   .0783821    -2.13   0.033     .0044089    .7939038
+--------------------------------------------------------------------------------
+```
+
+Thus, the relative probability of being squamous rather than benign increases by about 10 percent for every unit increase in the hscore. (Relative probabilities are also called relative odds.)
+
+
+
+
 
 Detouring just slightly let's note first that within the context of a *polytomous response* we might be considering an *ordinal* response or we could be dealing with and unordered or *nomianal* response. Ordinal data implicitly contains more information than nominal data and by using this information we can usually construct simpler models.
 
