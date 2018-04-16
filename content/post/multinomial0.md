@@ -107,7 +107,7 @@ Small_Cell     |
 
 Thus, the relative probability of being squamous rather than benign increases by about 10 percent for every unit increase in the hscore. (Relative probabilities are also called relative odds.)
 
-
+A common mistake is to interpret the coefficient as meaning that the probability of squamous is higher for higher hscores. It is only the relative probability of squamous over benign that is higher. To obtain a fuller picture we need to consider the second equation as well. The coefficient of black in the home equation is 0.813. Exponentiating, we obtain
 
 
 
