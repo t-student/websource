@@ -170,7 +170,7 @@ shinyApp(ui = ui, server = server)
 
 ## Manage State with `reactiveValues`
 
-As a rule shiny does not permit you the way to update input values. However, sometimes this might be userful to do and so shiny provides a mechanism to construct your own reactive values. You might use this in a situation where you want to trigger a data update conditionally, like this:
+As a rule shiny does not permit you to update input values. However, sometimes this might be useful to do and so shiny provides a mechanism to construct your own reactive values. You might use this in a situation where you want to trigger a data update conditionally, like this:
 
 ![](/media/shiny102-usingreactiveVal.JPG) 
 
