@@ -1,8 +1,8 @@
 +++
-title = "Citation Tools - Zotero"
+title = "The emmeans package"
 
-date = 2018-04-25
-lastmod = 2018-04-25
+date = 2018-05-09
+lastmod = 2018-05-09
 draft = false
 
 
@@ -44,7 +44,7 @@ caption = "1950s"
 
 
 
-The `emmeans` package in R is a replacement for `lsmeans`. This is the start of a self-instruct (not destruct) post on how to use `emmeans`.
+The `emmeans` package in R is a replacement for `lsmeans`. This is the start of a self-instruct/destruct bare bones essentials line on how to use `emmeans`.
 
 https://stackoverflow.com/questions/31707941/how-do-i-change-the-default-library-path-for-r-packages
 
