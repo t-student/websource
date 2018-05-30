@@ -45,22 +45,25 @@ caption = "1950s"
 
 Shiny is a way to deploy your data analyses in an interactive format that is backed by R.
 
+
+<!-- {{.TableOfContents}} -->
+
 ## Shiny Next Steps
 
-In an earlier post we went over how to get a basic Shiny app together and deployed to [shinyapps.io](http://www.shinyapps.io/). Now we will look more at reactivity and customise appearance using tech like html5 and css from within RStudio. Specifically, we put a bit more focus onto the server side.
+In an earlier [post]({{< ref "shiny01-overview.md" >}}) we went over how to get a basic Shiny app together and deployed to [shinyapps.io](http://www.shinyapps.io/). Now we will look more at reactivity and customise appearance using tech like html5 and css from within RStudio. Specifically, we put a bit more focus onto the server side.
 
 ## Customising Reactions
 
-So earlier we saw that we can update various outputs based on a users input. However, we can also reactivity to trigger code on the server side or output after some chain of reactive updates or, we could postpone updates until a user explicity requests them through an update button.
+So earlier we saw that we can update various outputs based on a users input. However, we can also use reactivity to trigger code on the server side or output after some chain of reactive updates or, we could postpone updates until a user explicity requests them through an update button. In short, **reactivity** is what makes your Shiny apps responsive. This [article](https://shiny.rstudio.com/articles/understanding-reactivity.html) explains reactivity from the ground up.
 
-The first thing to understand about reactive elements is that they work together with reactive functions. For example, the `renderPlot` function is a reactive function that expects to receive reactive variables such as `input$num` discussed last time. The input reactive values notify the observer whenever there is a state change and the observer function responds.
+The first thing to understand about reactive elements is that they work together with reactive functions. Loosely, a reactive element is just something that can change dynamically such as a slider on the user interface, that might be referenced in the server side with something like `input$myslider`. However, you cannot just access `input$myslider` willy-nilly, it needs to be enclosed in a reactive function. For example, the `renderPlot` function is a reactive function that expects to receive reactive variables such as `input$num` discussed last time. The input reactive values notify the observer whenever there is a state change and the observer function responds which will lead to re-rendering the plot (or whatever). More information on reactivity can be found at the [shiny site](https://shiny.rstudio.com/articles/reactivity-overview.html).
 
 There are about 7 functions you need to know to work with reactivity a large proportion being the `render*()` functions, but there are a few others we discuss here.
 
 
 ### `reactive`
 
-You can modularise code by using the function named `reactive`. With this you can, for example, share the same data across multiple reactive functions. However, in order to access the data stored within `reactive`  you need to invoke the data name as if you were calling a function. Below is an example to make it clear. We define a reactive data set and assign it to `x`. Whenever the input gets updated by the user the reactive method updates x. Now, within the `render` functions what we need to do is call `x` like we would call a function. 
+You can (and should) modularise code by using the function named `reactive`. With this you can, for example, share the same data across multiple reactive functions. However, in order to access the data stored within `reactive`  you need to invoke the data name as if you were calling a function. Below is an example to make it clear. We define a reactive data set and assign it to `x`. Whenever the input gets updated by the user the reactive method updates x. Now, within the `render` functions what we need to do is call `x` like we would call a function. 
 
 Note that `reactive` caches its value *until it becomes invalid* due to user input.
 
