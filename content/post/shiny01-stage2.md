@@ -45,12 +45,11 @@ caption = "1950s"
 
 Shiny is a way to deploy your data analyses in an interactive format that is backed by R.
 
-
 <!-- {{.TableOfContents}} -->
 
-## Shiny Next Steps
-
 In an earlier [post]({{< ref "shiny01-overview.md" >}}) we went over how to get a basic Shiny app together and deployed to [shinyapps.io](http://www.shinyapps.io/). Now we will look more at reactivity and customise appearance using tech like html5 and css from within RStudio. Specifically, we put a bit more focus onto the server side.
+
+{{% toc %}}
 
 ## Customising Reactions
 
