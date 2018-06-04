@@ -44,39 +44,41 @@ caption = "1950s"
 
 
 
-Statistical Rethinking is a great book for learning about Bayesian Modelling. In this first post of quite a few I am going to summarise some key points from the first three chapters, but mostly chapter 2 and 3. It is mainly intended as a quick-ish reference so I will be skimming over a lot of content.
+Statistical Rethinking is a great book for learning about Bayesian Modelling. In this first post of quite a few I am going to summarise some key points from the first three chapters, but mostly chapter 2 and 3. It is intended as a quick-ish reference so I will be skimming over a lot of content.
 
-I like examples so let's dive in with the proportion of water covering the globe problem, hereafter the water/globe problem. In order to estimate this proportion we could take the globe throw it up in the air, catch it and record whether our index finger is on water or on land. If we do this enough times, we should be able to produce a reasonable estimate the proportion of water. Here is data story is:
+{{% toc %}}
+
+I like examples so let's dive in with the proportion of water covering the globe problem, hereafter the water/globe problem. In order to estimate this proportion we could take the globe throw it up in the air, catch it and record whether our index finger is on water or on land. If we do this enough times, we should be able to produce a reasonable estimate the proportion of water. Here is the data story is:
 
 1. The true proportion of water is $p$.
 1. A single toss has probability $p$ of our finger being on water and $1-p$ of being on land.
 1. We toss the globe the same way each time and all our tosses are independent of the others.
 
-And assume we tossed the globe 9 times and for 6 of those tosses our finger lands on water. Now, Bayesian modelling takes a prior knowledge and updates our understanding based on observed data. The appropriate lingua franca is that your *posterior* is proportional to the product of the *likelihood* and the *prior*. A few definitions:
+And assume we tossed the globe 9 times and for 6 of those tosses our finger lands on water. Now, Bayesian modelling takes prior knowledge and updates our understanding based on observed data. What is prior knowledge? It's what you know before the first toss, e.g. that there is some water and some land so $p = 1$ is impossible. The appropriate lingua franca is that your *posterior* is proportional to the product of the *likelihood* and the *prior*. A few definitions:
 
-## Likelihood
+# Likelihood
 
-This gives you about the probability of any possible observation. The likelihood can be derived from the data story, here mapping to the binomial distribution. Specifically, we have the count of water observations $w$ is distributed binomially with probability $p$ over $n$ tosses of the globe.
+This gives you information about the relative probability of any possible observation. The likelihood can be derived from the data story, here mapping to the binomial distribution. Specifically, we have the count of water observations $w$ is distributed binomially with probability $p$ over $n$ tosses of the globe.
 
 $$
 Pr(w|n, p) = \frac{n!}{w!(n-w)!}p^w (1-p)^{n-w}
 $$
 
-If we used a value of $p$ equal to 0.3 and 0.9 then the probability of us counting $0, 1, 2, .., 9$ instances of water can be computed using `dbinom(0:9, size = 9, prob = 0.3)` and are shown below. We can think of any of the bars representing the relative number of ways to get a specific number of $w$'s holding $n$ and $p$ constant. For example, the relative number of ways to get eight $w$'s is roughly zero when we assum $p = 0.3$ and about 40% when p = 0.9. In both cases the sum of the probabilities equals 1.
+If we used a value of $p$ equal to 0.3 and 0.9 then the probability of us counting $0, 1, 2, .., 9$ instances of water can be computed in R using `dbinom(0:9, size = 9, prob = 0.3)` and are shown below. We can think of any of the bars representing the relative number of ways to get a specific number of $w$'s holding $n$ and $p$ constant. For example, the relative number of ways to get eight $w$'s is roughly zero when we assume $p = 0.3$ and about 40% when p = 0.9. In both cases the sum of the probabilities equals 1.
 
 Proportion of water = 0.3, n = 9   |  Proportion of water = 0.9, n = 9    
 :---------------------------------:|:-----------------------------------:
 ![](/media/rethink01-bar01.png)    |  ![](/media/rethink01-bar02.png)
 
-## Parameters
+# Parameters
 
-In this case $p$ is our parameter of interest.
+In this case $p$ is our parameter of interest. Let's move on.
 
-## Prior
+# Prior
 
-The prior represents our initial view of the world, it is the initial probability that we assign to each possible value of $p$, which in this case ranges from 0 to 1. Priors can be *uninformative*, *regularising* or *weakly informative* and they help constrain parameters to plausible values, e.g. the proportion of water on the globe cannot be -10%. There will be more to say on this later.
+The prior represents our initial view of the world -- it is the initial probability that we assign to each possible value of $p$, which in this case ranges from 0 to 1. Priors can be *uninformative*, *regularising* or *weakly informative* and they help constrain parameters to plausible values, e.g. the proportion of water on the globe cannot be -10%. There will be more to say on this later.
 
-## Posterior
+# Posterior
 
 Once you have a likelihood, have identified the parameters you want to estimate together with a prior for each parameter we can obtain the *posterior*. This is a distribution which tells us the probability of the parameters conditional on the data and the model. Mathematically the posterior is proportional to the product of the likelihood and the prior. In order for the posterior to be a valid pdf, it needs to be normalised by dividing the product of the likelihood and prior by the average likelihood as follows:
 
@@ -84,15 +86,15 @@ $$
 Pr(p|w) = \frac{Pr(w|p) \times Pr(p)}{Pr(w)}
 $$
 
-$Pr(w)$ is commonly called the probability of the data, $Pr(w) = E(Pr(w|p))= \int Pr(w|p)Pr(p)dp$. These integrals get tough for any non-trivial case and so we use numerical methods such as grid approximation, quadratic approximation or Markov chain Monte Carlo. The simplest approach for this example is to use the grid approximation.
+$Pr(w)$ is commonly called the probability of the data, $Pr(w) = E(Pr(w|p))= \int Pr(w|p)Pr(p)dp$. These integrals get tough for any non-trivial case and so we use numerical methods such as grid approximation, quadratic approximation or Markov chain Monte Carlo. The simplest numerical approach for this example is to use the grid approximation.
 
 A useful example for thinking about the normalising term is via the disease/test problem. The scenario states:
 
-1. there is a test that detects hiv 95% of the time ($Pr(+|hiv) = 0.95$)
-1. the test gives false positives 1% of the time ($Pr(+|not \ hiv) = 0.01$), and 
-1. hiv is relatively rare, say 0.1% of the population ($Pr(hiv) = 0.001$)
+1. there is a test that detects hiv 95% of the time; $Pr(+|hiv) = 0.95$
+1. the test gives false positives 1% of the time; $Pr(+|not \ hiv) = 0.01$, and 
+1. hiv is relatively rare, say 0.1% of the population; $Pr(hiv) = 0.001$
 
-So, if you test positive for hiv, what is the probability that you have hiv? In brief, we want $Pr(hiv|+result)$. However, this probability is a function of the probility of the disease in the community $Pr(hiv)$ and the probability that you get a +result conditional on having the disease. Using Bayes rule:
+So, if you test positive for hiv, what is the probability that you have hiv? In brief, we want $Pr(hiv|+result)$. However, this probability is a function of the probility of the disease in the community $Pr(hiv)$ and the probability that you get a positive test result conditional on having the disease. Using Bayes rule:
 
 $$
 Pr(hiv|+) = \frac{Pr(+|hiv) Pr(hiv)}{Pr(+)}
@@ -107,7 +109,7 @@ $$
 Which works through to about an 8.7% probability of actually having hiv.
 
 
-## Grid Approximation
+# Grid Approximation
 
 Here is the process:
 
@@ -115,9 +117,9 @@ Here is the process:
 1. Compute the value of the prior at each value on the grid.
 1. Compute the likelihood at each parameter value.
 1. Compute the unstandardised posterior at each parameter value in the grid by multiplying the likelihood and prior.
-1. Standardise the posterior by dividing each value by the sum of all unstandardised posterior. 
+1. Standardise the posterior by dividing each value by the sum of the unstandardised posterior. 
 
-If our data comprised 9 tosses from which water fell under our finger in 6 instances then here is how you use the grid approximation to compute and plot the posterior. The mode of the posterior suggests $p = 0.67$.
+If our data comprised 9 tosses from which water fell under our finger in 6 times then here is how you use the grid approximation to compute and plot the posterior. The mode of the posterior suggests a central value for $p$ equal to $0.67$.
 
 {{< highlight r>}}
 n.grid <- 100
@@ -137,9 +139,9 @@ p.grid[posterior == max(posterior)]
 ![](/media/rethink01-post01.png) 
 
 
-## Quadratic Approximation
+# Quadratic Approximation
 
-Quadratic approximation leverages the fact that the region near the peak of the posterior distribution will be normal-ish. So, this approach finds the posterior mode then computes the curvature near the peak which can be used to form the entire posterior distributions. The rethinking library has the map function to fit models using quadratic approximation.
+Quadratic approximation leverages the fact that the region near the peak of the posterior distribution will be normal-ish. So, this approach finds the posterior mode then computes the curvature near the peak which can be used to form the entire posterior distributions. The rethinking library has the `map` function to fit models using quadratic approximation.
 
 {{< highlight r>}}
 globe.qa <- rethinking::map(
@@ -149,7 +151,7 @@ globe.qa <- rethinking::map(
   ),
   data = list(w = 6)
 )
-## Parameter estimates
+# Parameter estimates
 precis(globe.qa)
 
 {{< /highlight >}}
@@ -163,9 +165,9 @@ p 0.67   0.16 0.42  0.92
 
 The actual posterior here is a Beta distribution, but the approximation is reasonable in this case. Nevertheless, we need to note that the sample size is small here and that we need to be careful with small n.
 
-## Sampling 
+# Sampling 
 
-In practical terms the end result of Bayesian modelling exercise is a sample from the posterior distribution (unless you have a closed form solution). As such you need to work with the samples for conducting inference, but this isn't such a bad thing. Earlier we obtained the posterior probability distribution from the water-globe problem and now the following should give you an idea of how to work with samples.
+Generally, the end result of a Bayesian modelling exercise is a sample from the posterior distribution (unless you have a closed form solution). As such you need to work with the samples for conducting inference, but this isn't such a bad thing. Earlier we obtained the posterior probability distribution from the water-globe problem and now the following should give you an idea of how to work with samples.
 
 {{< highlight r>}}
 set.seed(4254)
@@ -195,11 +197,11 @@ rethinking::HPDI(samples, prob = 0.95)
 median(samples)
 {{< /highlight >}}
 
-## Loss Functions
+# Loss Functions
 
-A principled way to choose a point estimate is to make use of a loss function, which tells you the cost associated with using a particular point estimate. In the water/globe problem, say there is a real life proportion of water covering the globe. Now, I tell you a point estimate from the posterior and will $100 if I am right but will lose money proportional to the distance I have from the true value. Under this loss function I will minimise my losses by using the median. There will be more on loss functions later.
+A principled way to choose a point estimate is to make use of a loss function, which tells you the cost associated with using a particular point estimate. In the water/globe problem, say there is a real life proportion of water covering the globe. Now, I tell you a point estimate from the posterior and will $100 if I am right but will lose money proportional to the distance I am from the true value. Under this loss function I will minimise my losses by using the **median**. There will be more on loss functions in later posts.
 
-## Sampling to Simulate
+# Sampling to Simulate
 
 Bayesian models are generative. We obtained the posterior probability of our parameter (proportion of water on the globe) and we can use that distribution to simulate data via the binomial distribution we saw earlier:
 
@@ -207,7 +209,7 @@ $$
 Pr(w|n, p) = \frac{n!}{w!(n-w)!}p^w (1-p)^{n-w}
 $$
 
-For example, frmo the samples, the median estimate for $p$ is $p = 0.646$ so we can generate a large number of simulated observations by using our $n = 9$ and $p = 0.646$.
+For example, from the samples, the median estimate for $p$ is $p = 0.646$ so we can generate a large number of simulated observations by using our $n = 9$ and $p = 0.646$.
 
 {{< highlight r>}}
 set.seed(3411)
@@ -224,7 +226,7 @@ Simulation based on single $p$     |  Posterior Predictive builds in uncertainty
 ![](/media/rethink01-sim01.png) |  ![](/media/rethink01-sim02.png)
 
 
-However, what we really would like to know is what the simulated data look like if we build in our uncertainty of the parameter estimate. When we do this we obtain a *posterior predictive distribution*. The way to do this is to use the samples as weights when simulating the data and this only necessitates a small tweak on the above code. The result is shown on the right hand side plot above. You can see how there is a much broader spread in $w$ reflecting our uncertainty about $p$. The simulation is effectively produced 
+However, what we really would like to know is what the simulated data look like if we build in our uncertainty of the parameter estimate. When we do this we obtain a **posterior predictive distribution**. The way to do this is to use the samples as weights when simulating the data and this only necessitates a small tweak on the above code. The result is shown on the right hand side plot above. You can see how there is a much broader spread in $w$ reflecting our uncertainty about $p$. 
 
 {{< highlight r>}}
 set.seed(3411)
@@ -238,7 +240,7 @@ ggplot(df, aes(x = sim))+
   scale_y_continuous("Pr(w|n, p)")
 {{< /highlight >}}
 
-In this case the posterior predictive distribution is quite consistent with the data we observed in that the distribution is centred around 6. We could assess the model in other ways for example assessing the longest run or the number of switches from water to land.
+In this case the posterior predictive distribution is quite consistent with the data we observed in that the distribution is centred around 6. We could assess the model in other ways for example assessing the longest run or the number of switches from water to land. The `bayesplot` package is quite a good way to explore these other options.
 
 
 
