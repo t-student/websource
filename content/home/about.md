@@ -55,15 +55,8 @@ weight = 5
 
 # Biography
 
-Mark Jones (t-student) is a biostatistician in the Clinical Research Design and Statistics Support Unit at the Hunter Medical Research Institute assisting researchers and commercial clients collect, process, analyse and interpret data from a wide range of studies. Mark is involved in a range of projects from randomized controlled trials to observational studies 
-to data visualisation.
+I am a statistician based at the Clinical Research Design and Statistics unit at the Hunter Medical Research Institute (HMRI). I provide statistical support to researchers in study design and methodology and/orundertake data management and analyses for them. I work across a broad range of projects tailoring solutions to address research questions within the constraints of the available budget and resources.
 
-Mark interests span statistical methods applied across the medicine, health, environmental and financial domains - anything you can poke a stick at really. 
+Prior to life as a statistician I spent 15 years in Software Engineering and Analyst roles. Immediately prior to myroleat HMRI, I was a Senior Consultant at a forestry technical services company with responsibility for survey and inventory design, optimising recovery from forest estates, due diligence assessments, valuation models and climate change projects. Having to critically appraise data within an objective and unbiased framework and then characterise uncertainty led me to study statistics and ultimately to my current role.
 
-Mark works predominantly in R and has been doing so for several years now, but will 
-pick up Stata and SAS on an intermittent basis as the need arises. 
-
-The main aim of this site is as a teaching aid primarily directed at myself. If the material is of use to someone else then top banana!
-
-
-
+My goals are simple - to continue developing my knowledge of statistical methods and to help clients value and leverage that knowledge across all aspects of their work.

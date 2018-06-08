@@ -1,5 +1,5 @@
 +++
-title = "Interpreting Interaction Terms in a GLM (Binomial family, log link) - Logistic Regression"
+title = "Interpreting Interaction Terms in a GLM (Binomial family, logit link) - Logistic Regression"
 
 date = 2018-02-14
 lastmod = 2018-02-14
@@ -131,7 +131,14 @@ predict(lm1, type = "response", newdata = data.frame(grp = c(0, 0, 0, 1, 1, 1), 
 0.3933892 0.6232216 0.8083892 0.3259346 0.1931308 0.1059346 
 ```
 
-The exponentiated intercept term represents the baseline odds of death. Similarly, the exponentiated group and time main effects are odds-ratios. However, the exponentiated interaction term is a ratio of odds-ratios.
+The exponentiated intercept term represents the baseline odds of death. Similarly, the exponentiated group and time main effects are odds-ratios. However, the exponentiated interaction term is a ratio of odds-ratios, see Table below.
+
+Term                |  Exponetiated Coefficient
+:-------------------|:------------------------
+Intercept           |  Baseline Odds
+Single coefficient  |  Odds Ratio
+Interaction         |  Ratio of Odds Ratio
+
 
 The baseline odds are $exp(-0.4331) = 0.6485$. I have a terrible time thinking in odds (mainly because they are unbounded to the right) so I always convert to probabilities. The baseline odds of death equate to $odds/(1+odds) = 0.393$. This aligns with the `b0` parameter in the linear predictor so things look good. 
 
