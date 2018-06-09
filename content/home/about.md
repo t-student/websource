@@ -19,7 +19,10 @@ weight = 5
     "Simulation",
     "Linear programming",
     "Resampling",
+    "Uncertainty",
     "Quantitative ecology",
+    "Forest ecosystem science",
+    "Forest valuation",
     "R",
     "Python",
     "Stan"
