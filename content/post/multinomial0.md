@@ -48,15 +48,19 @@ Think about a sample of zombies (I know, sorry) that fall into mutually exclusiv
 Well, we could subset our data and just run three logistic regression models comparing 0 versus type I, 0 versus type II and 0 versus type III. 
 But we don't do this. Instead we use a multinomial logistic model. Our dependent variable is zombie type and we use non-zombie as the reference level. We compute the probability of membership in the other categories compared to the probability of membership in the reference category. To do this we need to fit $M - 1$ models where $M$ is the number of levels in the dependent variable (4 here). We model the log odds, like this:
 
+<div>
 $$
-log \frac{Pr(Y_i = m)}{Pr(Y_i = referant)} = beta_0 + beta_1 bioscore_{i} = Z_{mi}
+log \frac{Pr(Y_i = m)}{Pr(Y_i = referant)} = \beta_{m,0} + \beta_{m,1} bioscore_i  = Z_{m,i}
 $$
+</div>
 
 To compute the probabilities you need to do:
 
+<div>
 $$
-Pr(Y_i = m) = \frac{exp(Z_{mi})}{1 + \sum_2^M exp(Z_{hi}) }
+Pr(Y_i = m) = \frac{exp(Z_{m,i})}{1 + \sum_{h=2}^M exp(Z_{h,i}) }
 $$
+</div>
 
 and for the reference category you just replace the numerator with a 1.
 
