@@ -1,5 +1,5 @@
 +++
-title = "The emmeans package"
+title = "WORK IN PROGRESS ALERT - The emmeans package"
 
 date = 2018-05-09
 lastmod = 2018-05-09

@@ -41,7 +41,11 @@ image = "https://raw.githubusercontent.com/gcushen/hugo-academic/master/images/t
 caption = "1950s"
 +++
 
-## Context
+Let's talk about classification.
+
+{{% toc %}}
+
+# Context and Simulation
 
 Logistic regression can be used as a classifier for a dichotomous outcomes (live/die), but ultimately you  need to specify the threshold probability that demarcates outcomes.
 
@@ -117,7 +121,7 @@ Inspecting the results from the regression models we can see that `lm1` and `lm2
 
 ![](/media/fig_scatter_beetledeath.png) 
 
-## Sensitivity and specificity
+# Sensitivity and specificity
 
 In order to understand the ROC curve, you need to have a working idea of *sensitivity* and *specificity*. Sensitivity gives us the proportion of deaths that were predicted as deaths and specificity gives the proportion of beetles that we predicted would live that actually lived. These are sometimes called the true positive and true negative rate. We will also encounter another related concept - the false positive rate = 1 - specificity. To cement these ideas, let's say that we decide that we are going to say that if a beetle is given a dose of 65 then we predict that it will die (corresponding to a probability threshold of 0.76). We can easily see how right/wrong we are by updating our data with a `predict death`  field.
 
@@ -149,7 +153,9 @@ Predicted (Yes) |  98             | 302             | 400
 
 Table: Threshold poison to predict death: 55 units
 
-If we do this on all the possible thresholds for our data then we can plot a receiver operator charactistic (ROC) curve.
+# ROC Curve
+
+If we adopt the above procedure on all the possible thresholds for our data then we can plot a receiver operator charactistic (ROC) curve.
 
 {{< highlight r>}}
 ggplot(dt_1, aes(d = death, m = prob_death)) + 

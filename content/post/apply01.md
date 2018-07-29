@@ -1,5 +1,5 @@
 +++
-title = "Using apply functions in R"
+title = "WORK IN PROGRESS ALERT - Using apply functions in R"
 
 date = 2018-05-22
 lastmod = 2018-05-22
