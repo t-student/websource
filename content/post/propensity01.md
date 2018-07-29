@@ -59,7 +59,7 @@ $$
 
 ## Estimating the Propensity Score
 
-In an RCT the $Pr(trt = 1| X) = Pr(trt = 0| X) = 0.5$ but in an observational study we do not know what $Pr(trt = 1| X)$ is. However, we observe both $trt$ and we observe $X$ so theoretically we should be able to estimate the propensity score?
+In an RCT the $Pr(trt = 1| X) = Pr(trt = 0| X) = 0.5$ but in an observational study we do not know what $Pr(trt = 1| X)$ is. However, we observe the treatment status ($trt$) and we observe the covariates ($X$) so theoretically we should be able to estimate the propensity score?
 
 We start by treating the $trt$ as the response and we identify a suitable method for estimating the probability of $trt$. Typically/commonly logistic regression is used but you can choose any method that gives us a probability of $trt$ for each subject.
 
